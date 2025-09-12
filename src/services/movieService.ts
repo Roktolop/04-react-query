@@ -5,6 +5,7 @@ const API_KEY = import.meta.env.VITE_TMDB_TOKEN;
 
 export interface fetchMoviesOps {
   query: string;
+  curPage?: number;
   adult?: boolean;
 }
 
@@ -22,16 +23,10 @@ const options = {
   }
 };
 
-export default async function fetchMovies({ query, adult = false }: fetchMoviesOps): Promise<MoviesResponse> {
-  const url = `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=${adult}&language=en-US&page=1`;
+export default async function fetchMovies({ query, curPage = 1 ,adult = false }: fetchMoviesOps): Promise<MoviesResponse> {
+  const url = `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=${adult}&language=en-US&page=${curPage}`;
 
-  try {
-    const response = await axios.get<MoviesResponse>(url, options);
-    return response.data;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-
+  const response = await axios.get<MoviesResponse>(url, options);
+  return response.data;
 }
 
