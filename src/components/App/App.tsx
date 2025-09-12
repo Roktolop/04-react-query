@@ -28,7 +28,7 @@ function App() {
     enabled: query.length > 0,
   });
 
-console.log('data',data);
+  console.log('data',data);
 
   //check if no movies found
   useEffect(() => {
