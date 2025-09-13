@@ -10,21 +10,23 @@ import type { Movie } from '../../types/movie.ts'
 
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import ReactPaginate from 'react-paginate';
 
 function App() {
   const [query, setQuery] = useState('');
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [curPage, setPage] = useState(1);
+  const [curPage, setCurPage] = useState(1);
 
   const handleSubmit = async (query: string) => { 
     setQuery(query);
+    setCurPage(1);
   }
   
   const {data, isLoading, isError, isSuccess} = useQuery({
     queryKey: ['movies', query, curPage],
     queryFn: () => fetchMovies({ query, curPage }),
+    placeholderData: keepPreviousData,
     enabled: query.length > 0,
   });
 
@@ -63,7 +65,7 @@ function App() {
             pageCount={data?.total_pages}
             pageRangeDisplayed={5}
             marginPagesDisplayed={1}
-            onPageChange={({ selected }) => setPage(selected + 1)}
+            onPageChange={({ selected }) => setCurPage(selected + 1)}
             forcePage={curPage - 1}
             containerClassName={css.pagination}
             activeClassName={css.active}
